@@ -6,7 +6,7 @@ const MODULES = [
   { id: "bc1", nom: "BC1 – Sécurité", detail: "Règles de sécurité, pas de tir, commandements, incidents, armes, munitions, plomb", obligatoire: true, examen: 15 },
   { id: "bc2", nom: "BC2 – Accueillir", detail: "Accueil des publics, tir et santé, encadrement, Cibles Couleurs, valeurs", obligatoire: true, examen: 5 },
   { id: "bc3", nom: "BC3 – Faire découvrir", detail: "Les 12 disciplines, position, visée, lâcher, séquence de tir", obligatoire: true, examen: 5 },
-  { id: "bc4", nom: "BC4 – S'intégrer au club", detail: "Licence, clubs, organisation fédérale, réglementation", obligatoire: true, examen: 5 },
+  { id: "bc4", nom: "BC4 – S'intégrer au club", detail: "Licence, assurance, responsabilités, armes B et C, transport, FINIADA, organisation fédérale", obligatoire: true, examen: 5 },
   { id: "reglement", nom: "Règlement de la formation CAC", detail: "Accès, déroulement, validation, commissions, formation continue (sept. 2026)", obligatoire: false }
 ];
 

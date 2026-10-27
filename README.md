@@ -13,7 +13,7 @@ Les modules suivent les blocs de compétences (BC) du règlement CAC applicable 
 | BC1 – Sécurité | Règles de sécurité, pas de tir, commandements, incidents, armes, munitions, plomb | Manuel de tir sportif (03/2026) |
 | BC2 – Accueillir | Accueil des publics, tir et santé, encadrement, Cibles Couleurs, valeurs | Manuel de tir sportif (03/2026) |
 | BC3 – Faire découvrir | Les 12 disciplines, position, visée, lâcher, séquence de tir | Manuel de tir sportif (03/2026) |
-| BC4 – S'intégrer au club | Licence, clubs, organisation fédérale, réglementation | Manuel de tir sportif (03/2026) |
+| BC4 – S'intégrer au club | Licence, clubs, organisation fédérale ; responsabilités, assurance, armes B et C, transport, FINIADA | Manuel de tir sportif (03/2026) ; Legifrance, service-public.gouv.fr, fftir.org (oct. 2026) |
 | Règlement de la formation | Accès, déroulement, validation, commissions, formation continue | Règlement CAC (09/2026) |
 
 Chaque question indique sa source (document et page ou paragraphe).
