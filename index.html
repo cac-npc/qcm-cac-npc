@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QCM CAC Tir sportif</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --card: #ffffff; --ink: #1d2433; --muted: #5f6878;
+    --line: #dcdcd4; --accent: #1f4e8c; --accent-ink: #fff;
+    --ok: #1d7a46; --ok-bg: #e5f4ea; --ko: #b3261e; --ko-bg: #fbe9e7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171d; --card: #1d222b; --ink: #e8eaee; --muted: #9aa3b2;
+      --line: #313846; --accent: #6ea0e6; --accent-ink: #0f1218;
+      --ok: #6fd39a; --ok-bg: #173325; --ko: #f08a80; --ko-bg: #3a1c1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+          padding: 20px; margin-bottom: 16px; }
+  fieldset { border: 0; padding: 0; margin: 0 0 16px; }
+  legend { font-weight: 600; margin-bottom: 8px; }
+  label.opt { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px;
+              border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+  label.opt:hover { border-color: var(--accent); }
+  input[type=radio], input[type=checkbox] { margin-top: 4px; accent-color: var(--accent); }
+  select { font: inherit; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line);
+           background: var(--card); color: var(--ink); }
+  button { font: inherit; font-weight: 600; padding: 10px 18px; border-radius: 8px; border: 0;
+           background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+  button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .meta { font-size: .85rem; color: var(--muted); margin-bottom: 6px; }
+  .q { font-weight: 600; margin: 0 0 12px; }
+  .score { font-size: 2.2rem; font-weight: 700; margin: 0; }
+  .ok { background: var(--ok-bg); border-color: var(--ok); }
+  .ko { background: var(--ko-bg); border-color: var(--ko); }
+  .tag { display: inline-block; font-size: .8rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+  .tag.ok { color: var(--ok); } .tag.ko { color: var(--ko); }
+  .expl { color: var(--muted); margin-top: 8px; }
+  .themes td { padding: 4px 12px 4px 0; }
+  .hidden { display: none; }
+  button.small { padding: 6px 12px; font-size: .85rem; }
+  .oblig { font-size: .75rem; font-weight: 700; color: var(--accent); border: 1px solid var(--accent);
+           border-radius: 99px; padding: 1px 8px; margin-left: 6px; white-space: nowrap; }
+  .count { color: var(--muted); font-size: .85rem; margin-left: auto; white-space: nowrap; }
+  label.opt.vide { opacity: .5; cursor: default; }
+  .src { font-size: .8rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+  .print-only { display: none; }
+  #quiz-actions { position: sticky; bottom: 0; background: var(--bg); padding: 12px 0; }
+  .chrono { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .chrono.urgent { color: var(--ko); }
+  .elim { font-size: .75rem; font-weight: 700; color: var(--ko); border: 1px solid var(--ko);
+          border-radius: 99px; padding: 1px 8px; margin-left: 6px; }
+  .verdict { font-size: 1.2rem; font-weight: 700; margin: 4px 0 8px; }
+  @media print {
+    body { background: #fff; color: #000; }
+    .no-print { display: none !important; }
+    .print-only { display: block; }
+    .card { border: 0; padding: 0 0 12px; break-inside: avoid; }
+    .corrige { break-before: page; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>QCM CAC Tir sportif</h1>
+  <p class="sub">Révision du certificat « Capacité à accueillir et conseiller » (FFTir) : Manuel de tir sportif et règlement de la formation. La correction s'affiche à la fin.</p>
+
+  <!-- Examen blanc -->
+  <section id="exam" class="card no-print">
+    <legend>Examen blanc</legend>
+    <p class="meta">Comme l'épreuve théorique officielle : 30 questions en 20 minutes (BC1 : 15 dont 10 éliminatoires sur la sécurité, BC2 : 5, BC3 : 5, BC4 : 5). Réussite : 80 % de bonnes réponses et aucune erreur sur les éliminatoires.</p>
+    <button id="start-exam">Lancer l'examen blanc</button>
+  </section>
+
+  <!-- Écran de configuration -->
+  <section id="setup" class="card no-print">
+    <legend style="margin-bottom:12px">Entraînement libre</legend>
+    <fieldset>
+      <legend>Questionnaires</legend>
+      <div id="modules"></div>
+      <div class="row" style="margin-top:4px">
+        <button type="button" class="ghost small" id="sel-oblig">Socle obligatoire</button>
+        <button type="button" class="ghost small" id="sel-tout">Tout cocher</button>
+        <button type="button" class="ghost small" id="sel-rien">Tout décocher</button>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Nombre de questions</legend>
+      <select id="nb">
+        <option value="25">25 au hasard</option>
+        <option value="50">50 au hasard</option>
+        <option value="0" selected>Toutes</option>
+      </select>
+      <span id="dispo" class="meta"></span>
+    </fieldset>
+    <fieldset>
+      <label class="opt"><input type="checkbox" id="melange" checked> Mélanger les questions et les réponses</label>
+    </fieldset>
+    <div class="row">
+      <button id="start">Commencer</button>
+      <button id="print" class="ghost">Version papier (corrigé à la fin)</button>
+    </div>
+  </section>
+
+  <!-- Questionnaire -->
+  <form id="quiz" class="hidden"></form>
+  <div id="quiz-actions" class="row hidden no-print">
+    <button id="finish">Terminer et voir la correction</button>
+    <span id="progress" class="meta"></span>
+    <span id="chrono" class="chrono hidden"></span>
+  </div>
+
+  <!-- Résultats -->
+  <section id="results" class="hidden"></section>
+
+  <!-- Version papier -->
+  <section id="paper" class="hidden"></section>
+</main>
+
+<script src="questions/modules.js"></script>
+<!-- FICHIERS-QUESTIONS -->
+<script src="questions/bc1-securite.js"></script>
+<script src="questions/bc2-accueil.js"></script>
+<script src="questions/bc3-decouverte.js"></script>
+<script src="questions/bc4-club.js"></script>
+<script src="questions/reglement.js"></script>
+<!-- /FICHIERS-QUESTIONS -->
+<script>
+const $ = (s) => document.querySelector(s);
+const LETTRES = ["A", "B", "C", "D", "E"];
+let serie = [];
+
+function melanger(t) {
+  const a = t.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const NOMS = Object.fromEntries(MODULES.map(m => [m.id, m.nom]));
+const nbParModule = id => QUESTIONS.filter(q => q.module === id).length;
+
+function afficherModules() {
+  $("#modules").innerHTML = MODULES.map(m => {
+    const n = nbParModule(m.id);
+    return `<label class="opt ${n ? "" : "vide"}">
+      <input type="checkbox" name="module" value="${m.id}" ${m.obligatoire && n ? "checked" : ""} ${n ? "" : "disabled"}>
+      <span><b>${esc(m.nom)}</b>${m.obligatoire ? '<span class="oblig">Obligatoire</span>' : ""}<br>
+      <span class="meta">${esc(m.detail)}</span></span>
+      <span class="count">${n ? n + " questions" : "bientôt"}</span></label>`;
+  }).join("");
+  majDispo();
+}
+
+function modulesChoisis() {
+  return [...document.querySelectorAll('input[name=module]:checked')].map(c => c.value);
+}
+
+function majDispo() {
+  const sel = modulesChoisis();
+  const n = QUESTIONS.filter(q => sel.includes(q.module)).length;
+  $("#dispo").textContent = ` ${n} questions disponibles`;
+  $("#start").disabled = $("#print").disabled = n === 0;
+}
+
+function cocher(filtre) {
+  document.querySelectorAll('input[name=module]:not(:disabled)').forEach(c => {
+    c.checked = filtre(MODULES.find(m => m.id === c.value));
+  });
+  majDispo();
+}
+
+function construireSerie() {
+  const sel = modulesChoisis();
+  const nb = parseInt($("#nb").value, 10);
+  const mix = $("#melange").checked;
+  let qs = QUESTIONS.filter(q => sel.includes(q.module));
+  if (nb > 0 && !mix) qs = melanger(qs).slice(0, nb).sort((a, b) => QUESTIONS.indexOf(a) - QUESTIONS.indexOf(b));
+  if (mix) qs = melanger(qs);
+  if (nb > 0) qs = qs.slice(0, nb);
+  return qs.map(q => preparer(q, mix));
+}
+
+function preparer(q, mix) {
+  let ordre = q.choix.map((_, i) => i);
+  if (mix) ordre = melanger(ordre);
+  return { ...q, choix: ordre.map(i => q.choix[i]), bonne: ordre.indexOf(q.bonne) };
+}
+
+// Examen blanc : tirage selon la répartition officielle (MODULES[].examen),
+// avec EXAMEN.eliminatoires questions éliminatoires prises dans le BC1.
+function composerExamen() {
+  const qs = [];
+  MODULES.filter(m => m.examen).forEach(m => {
+    const dumodule = melanger(QUESTIONS.filter(q => q.module === m.id));
+    const elim = m.id === "bc1" ? dumodule.filter(q => q.eliminatoire).slice(0, EXAMEN.eliminatoires) : [];
+    const autres = dumodule.filter(q => !elim.includes(q) && !q.eliminatoire);
+    const reste = dumodule.filter(q => !elim.includes(q) && q.eliminatoire);
+    // Les éliminatoires en trop servent de questions normales si le module manque de questions.
+    const choisies = elim.concat(autres, reste).slice(0, m.examen)
+      .map(q => ({ ...q, eliminatoire: elim.includes(q) }));
+    qs.push(...choisies);
+  });
+  return melanger(qs).map(q => preparer(q, true));
+}
+
+let minuterie = null;
+function lancerChrono(minutes) {
+  const fin = Date.now() + minutes * 60000;
+  const c = $("#chrono");
+  c.classList.remove("hidden");
+  const tic = () => {
+    const reste = Math.max(0, Math.round((fin - Date.now()) / 1000));
+    c.textContent = `⏱ ${Math.floor(reste / 60)}:${String(reste % 60).padStart(2, "0")}`;
+    c.classList.toggle("urgent", reste <= 120);
+    if (reste === 0) { clearInterval(minuterie); corriger(true); }
+  };
+  tic();
+  minuterie = setInterval(tic, 1000);
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+function afficherQuiz() {
+  const f = $("#quiz");
+  f.innerHTML = serie.map((q, i) => `
+    <div class="card">
+      <div class="meta">Question ${i + 1}/${serie.length} · ${esc(NOMS[q.module])} · ${esc(q.theme)}${q.eliminatoire ? '<span class="elim">Éliminatoire</span>' : ""}</div>
+      <p class="q">${esc(q.q)}</p>
+      ${q.choix.map((c, j) => `
+        <label class="opt"><input type="radio" name="q${i}" value="${j}"> <span><b>${LETTRES[j]}.</b> ${esc(c)}</span></label>
+      `).join("")}
+    </div>`).join("");
+  f.classList.remove("hidden");
+  $("#quiz-actions").classList.remove("hidden");
+  majProgression();
+}
+
+function majProgression() {
+  const rep = serie.filter((_, i) => document.querySelector(`input[name=q${i}]:checked`)).length;
+  $("#progress").textContent = `${rep}/${serie.length} réponses`;
+}
+
+function corriger(tempsEcoule = false) {
+  const reponses = serie.map((_, i) => {
+    const r = document.querySelector(`input[name=q${i}]:checked`);
+    return r ? parseInt(r.value, 10) : null;
+  });
+  const nonRep = reponses.filter(r => r === null).length;
+  if (!tempsEcoule && nonRep && !confirm(`${nonRep} question(s) sans réponse. Terminer quand même ?`)) return;
+  clearInterval(minuterie);
+  $("#chrono").classList.add("hidden");
+
+  let total = 0;
+  const parTheme = {};
+  serie.forEach((q, i) => {
+    const ok = reponses[i] === q.bonne;
+    if (ok) total++;
+    const k = `${NOMS[q.module]} – ${q.theme}`;
+    parTheme[k] = parTheme[k] || { ok: 0, n: 0 };
+    parTheme[k].n++; if (ok) parTheme[k].ok++;
+  });
+  const pct = Math.round(100 * total / serie.length);
+  const elimRatees = serie.filter((q, i) => q.eliminatoire && reponses[i] !== q.bonne).length;
+
+  $("#results").innerHTML = `
+    <div class="card">
+      ${tempsEcoule ? '<p class="meta">Temps écoulé : la copie a été ramassée automatiquement.</p>' : ""}
+      <p class="score">${total}/${serie.length} · ${pct} %</p>
+      ${modeExamen ? verdictExamen(pct, elimRatees) : `<p class="meta">${pct >= 80 ? "Très bien, c'est maîtrisé." : pct >= 60 ? "Correct, revois les thèmes les plus faibles." : "À retravailler : relis les textes concernés puis recommence."}</p>`}
+      <table class="themes">${Object.entries(parTheme).map(([k, v]) =>
+        `<tr><td>${esc(k)}</td><td><b>${v.ok}/${v.n}</b></td></tr>`).join("")}</table>
+      <div class="row no-print" style="margin-top:16px">
+        <button onclick="location.reload()">Nouvelle série</button>
+        <button class="ghost" onclick="window.print()">Imprimer la correction</button>
+      </div>
+    </div>
+    <h2>Correction</h2>
+    ${serie.map((q, i) => {
+      const r = reponses[i], ok = r === q.bonne;
+      return `<div class="card ${ok ? "ok" : "ko"}">
+        <div class="meta">Question ${i + 1} · ${esc(NOMS[q.module])} · ${esc(q.theme)}${q.eliminatoire ? '<span class="elim">Éliminatoire</span>' : ""}
+          <span class="tag ${ok ? "ok" : "ko"}">${ok ? "Juste" : r === null ? "Sans réponse" : "Faux"}</span></div>
+        <p class="q">${esc(q.q)}</p>
+        ${r !== null && !ok ? `<div>Ta réponse : ${LETTRES[r]}. ${esc(q.choix[r])}</div>` : ""}
+        <div><b>Bonne réponse : ${LETTRES[q.bonne]}. ${esc(q.choix[q.bonne])}</b></div>
+        <div class="expl">${esc(q.explication)}</div>
+        ${q.source ? `<div class="src">Source : ${esc(q.source)}</div>` : ""}
+      </div>`;
+    }).join("")}`;
+
+  $("#quiz").classList.add("hidden");
+  $("#quiz-actions").classList.add("hidden");
+  $("#results").classList.remove("hidden");
+  window.scrollTo(0, 0);
+}
+
+function versionPapier() {
+  serie = construireSerie();
+  $("#paper").innerHTML = `
+    <div class="no-print row" style="margin-bottom:16px">
+      <button onclick="window.print()">Imprimer / PDF</button>
+      <button class="ghost" onclick="location.reload()">Retour</button>
+    </div>
+    <h2>Questions (${serie.length})</h2>
+    <p class="print-only">Nom : ____________________ Date : __________ Score : ____ / ${serie.length}</p>
+    ${serie.map((q, i) => `<div class="card">
+      <p class="q">${i + 1}. ${esc(q.q)}</p>
+      ${q.choix.map((c, j) => `<div>☐ ${LETTRES[j]}. ${esc(c)}</div>`).join("")}
+    </div>`).join("")}
+    <div class="corrige">
+      <h2>Corrigé</h2>
+      ${serie.map((q, i) => `<div class="card">
+        <b>${i + 1}. ${LETTRES[q.bonne]}</b> – ${esc(q.choix[q.bonne])}
+        <div class="expl">${esc(q.explication)}</div>
+        ${q.source ? `<div class="src">Source : ${esc(q.source)}</div>` : ""}
+      </div>`).join("")}
+    </div>`;
+  cacherAccueil();
+  $("#paper").classList.remove("hidden");
+}
+
+// Verdict de l'examen blanc, selon la règle de l'épreuve théorique officielle.
+function verdictExamen(pct, elimRatees) {
+  const recu = pct >= EXAMEN.seuil && elimRatees === 0;
+  const motifs = [];
+  if (pct < EXAMEN.seuil) motifs.push(`moins de ${EXAMEN.seuil} % de bonnes réponses`);
+  if (elimRatees) motifs.push(`${elimRatees} question(s) éliminatoire(s) ratée(s)`);
+  return `<p class="verdict" style="color:var(--${recu ? "ok" : "ko"})">${recu ? "Examen blanc réussi" : "Examen blanc non validé"}</p>
+    <p class="meta">${recu ? `Au moins ${EXAMEN.seuil} % et toutes les éliminatoires justes.` : "Motif : " + motifs.join(" et ") + "."}</p>`;
+}
+
+let modeExamen = false;
+function cacherAccueil() {
+  $("#exam").classList.add("hidden");
+  $("#setup").classList.add("hidden");
+}
+
+$("#start").addEventListener("click", () => {
+  serie = construireSerie();
+  cacherAccueil();
+  afficherQuiz();
+});
+$("#start-exam").addEventListener("click", () => {
+  modeExamen = true;
+  serie = composerExamen();
+  cacherAccueil();
+  afficherQuiz();
+  lancerChrono(EXAMEN.duree);
+});
+$("#quiz").addEventListener("change", majProgression);
+$("#finish").addEventListener("click", () => corriger());
+$("#print").addEventListener("click", versionPapier);
+$("#modules").addEventListener("change", majDispo);
+$("#sel-oblig").addEventListener("click", () => cocher(m => m.obligatoire));
+$("#sel-tout").addEventListener("click", () => cocher(() => true));
+$("#sel-rien").addEventListener("click", () => cocher(() => false));
+afficherModules();
+</script>
+</body>
+</html>
